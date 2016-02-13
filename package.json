@@ -1,0 +1,28 @@
+{
+  "name": "tenrox-utils",
+  "version": "1.0.0",
+  "description": "Interface with Tenrox timesheet system's API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nigelsdtech/tenrox-utils.git"
+  },
+  "keywords": [
+    "Tenrox",
+    "API"
+  ],
+  "author": "Nigel Stephen D'Souza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nigelsdtech/tenrox-utils/issues"
+  },
+  "homepage": "https://github.com/nigelsdtech/tenrox-utils#readme",
+  "dependencies": {
+    "dateformat": "1.0.12",
+    "json-print": "0.0.5",
+    "request": "2.69.0"
+  }
+}
