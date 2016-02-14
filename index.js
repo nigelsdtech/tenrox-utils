@@ -85,8 +85,8 @@ method.doAuth = function (callback) {
   if (this.cachedAuthAt
     && (now.getTime() - this.cachedAuthAt.getTime()) <= this.authCacheDuration
   ) {
-      callback(null,this.cachedAuth)
-      return null;
+    callback(null,this.cachedAuth)
+    return null;
   }
 
 
@@ -105,8 +105,7 @@ method.doAuth = function (callback) {
   request(reqOptions, function (err,response,body) {
 
     if (err) {
-      console.error('tenroxUtils.doAuth error: ' + err)
-      callback(new Error(err));
+      callback(new Error('tenroxUtils.doAuth error: ' + err));
       return null;
     }
 
@@ -152,8 +151,7 @@ method.getTimesheetEntries = function (params,callback) {
   this.doAuth ( function (err, authBody) {
 
     if (err) {
-      console.error('tenroxUtils.getTimesheetEntries error authorizing: ' + JSON.stringify(err))
-      callback(new Error(err));
+      callback(new Error('tenroxUtils.getTimesheetEntries error authorizing: ' + err));
       return null;
     }
 
@@ -181,8 +179,7 @@ method.getTimesheetEntries = function (params,callback) {
     request(reqOptions, function (err,response,body) {
 
       if (err) {
-        console.error('tenroxUtils.getTimesheetEntries error while making request: ' + JSON.parse(err))
-        callback(new Error(err));
+        callback(new Error('tenroxUtils.getTimesheetEntries error while making request: ' + err));
         return null;
       }
 
