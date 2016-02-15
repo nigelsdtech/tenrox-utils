@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/nigelsdtech/tenrox-utils#readme",
   "dependencies": {
-    "dateformat": "1.0.12",
-    "json-print": "0.0.5",
-    "request": "2.69.0"
+    "dateformat": "~1.0.12",
+    "json-print": "~0.0.5",
+    "request": "~2.65.0"
   }
 }
