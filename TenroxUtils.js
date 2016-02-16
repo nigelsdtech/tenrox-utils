@@ -46,7 +46,7 @@ var authCacheDuration
  * @version  v1
  * @variation v1
  * @this TenroxUtils
- * @param {object=} options Options for Tenrox
+ * @param {object=} params - Options for Tenrox
  * @param {string} params.org - The name of your company as registered with Tenrox.
  * @param {string} params.user - Your username on the Tenrox system.
  * @param {string} params.password - Your password on the Tenrox system.
@@ -80,7 +80,8 @@ method.doAuth = function (callback) {
 
   var self = this
 
-  // Check if there's a cached authBody that's less than 2 minutes old
+  // Check if there's a cached authBody that's younger than the configured cache duration
+  // If there is, return this auth body instead.
   var now = new Date()
   if (this.cachedAuthAt
     && (now.getTime() - this.cachedAuthAt.getTime()) <= this.authCacheDuration
@@ -130,15 +131,14 @@ method.doAuth = function (callback) {
  * @alias tenroxUtils.getTimesheetEntries
  * @memberOf! tenroxUtils(v1)
  *
- * @param {object} params - Parameters for request
+ * @param {object=} params - Parameters for request
  * @param {date} params.startDate - Get entries from this day
  * @param {date} params.endDate - Get entries up to this day
  * @param {string} params.taskNameFilter - Regexp search to filter on the task name. Default null.
  * @param {date} params.periodDate - For internal use only when this proc calls itself recursively. Default null.
  * @param {object} params.matchedEntries - For internal use only when this proc calls itself recursively. Default null
- * @param {callback} callback - The callback that handles the response.
+ * @param {callback} callback - The callback that handles the response. It provides an array with a set of timesheet entries that matched the criteria.
  *
- * @return {object} Returns set of timesheet entries that matched the criteria, or null
  */
 method.getTimesheetEntries = function (params,callback) {
 
