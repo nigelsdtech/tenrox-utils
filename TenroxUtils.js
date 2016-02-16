@@ -31,7 +31,7 @@ var method = TenroxUtils.prototype;
 var authCacheDuration
    ,cachedAuth
    ,cachedAuthAt
-   ,mobiapi
+   ,mobiApiUrl
    ,org
    ,password
    ,username
@@ -46,7 +46,7 @@ var authCacheDuration
  * @version  v1
  * @variation v1
  * @this TenroxUtils
- * @param {object=} options Options for Tenrox
+ * @param {object=} params - Options for Tenrox
  * @param {string} params.org - The name of your company as registered with Tenrox.
  * @param {string} params.user - Your username on the Tenrox system.
  * @param {string} params.password - Your password on the Tenrox system.
@@ -59,7 +59,7 @@ function TenroxUtils(params) {
   this.password  = params.password
 
 
-  this.mobiapi           = 'https://2015r1mobile.tenrox.net/tenterprise/api'
+  this.mobiApiUrl        = 'https://2015r1mobile.tenrox.net/tenterprise/api'
   this.authCacheDuration = (1000*60*2);
 
 }
@@ -80,7 +80,8 @@ method.doAuth = function (callback) {
 
   var self = this
 
-  // Check if there's a cached authBody that's less than 2 minutes old
+  // Check if there's a cached authBody that's younger than the configured cache duration
+  // If there is, return this auth body instead.
   var now = new Date()
   if (this.cachedAuthAt
     && (now.getTime() - this.cachedAuthAt.getTime()) <= this.authCacheDuration
@@ -90,19 +91,16 @@ method.doAuth = function (callback) {
   }
 
 
-  var targetURI      = this.mobiapi+'/Security'
-     ,basicAuthUname = this.org+":"+this.username
-     ,basicAuthPword = this.password
-
-  var reqCfg = request.get(targetURI).auth(basicAuthUname,basicAuthPword)
-
-
-  var reqOptions = {
-    url: reqCfg.uri.href,
-    headers: reqCfg.headers
-  }
-
-  request(reqOptions, function (err,response,body) {
+  // Fire off the request
+  request({
+    method: 'GET',
+    baseUrl: this.mobiApiUrl,
+    uri: 'Security',
+    auth: {
+      user: this.org+':'+this.username,
+      pass: this.password
+    }
+  } , function (err,response,body) {
 
     if (err) {
       callback(new Error('tenroxUtils.doAuth error: ' + err));
@@ -130,20 +128,19 @@ method.doAuth = function (callback) {
  * @alias tenroxUtils.getTimesheetEntries
  * @memberOf! tenroxUtils(v1)
  *
- * @param {object} params - Parameters for request
+ * @param {object=} params - Parameters for request
  * @param {date} params.startDate - Get entries from this day
  * @param {date} params.endDate - Get entries up to this day
  * @param {string} params.taskNameFilter - Regexp search to filter on the task name. Default null.
  * @param {date} params.periodDate - For internal use only when this proc calls itself recursively. Default null.
  * @param {object} params.matchedEntries - For internal use only when this proc calls itself recursively. Default null
- * @param {callback} callback - The callback that handles the response.
+ * @param {callback} callback - The callback that handles the response. It provides an array with a set of timesheet entries that matched the criteria.
  *
- * @return {object} Returns set of timesheet entries that matched the criteria, or null
  */
 method.getTimesheetEntries = function (params,callback) {
 
   var start = params.startDate
-      ,end   = params.endDate
+     ,end   = params.endDate
 
   var self = this;
 
@@ -164,9 +161,10 @@ method.getTimesheetEntries = function (params,callback) {
     }
 
 
-    // Setup the request using the token and the userId from the auth response
-    var reqOptions = {
-      url: self.mobiapi+'/Timesheets',
+    request({
+      method: 'GET',
+      baseUrl: self.mobiApiUrl,
+      uri: 'Timesheets',
       headers: {
         'API-Key' : token
       },
@@ -174,9 +172,7 @@ method.getTimesheetEntries = function (params,callback) {
         'userId':  userId,
         'anydate': dateformat(period, 'mm-dd-yyyy')
       }
-    }
-
-    request(reqOptions, function (err,response,body) {
+    }, function (err,response,body) {
 
       if (err) {
         callback(new Error('tenroxUtils.getTimesheetEntries error while making request: ' + err));
@@ -197,10 +193,14 @@ method.getTimesheetEntries = function (params,callback) {
         var entry = timeEntries[i];
         var ent = new Date(entry.EntryDate);
 
-	// Filter on the dates
-        if ( ent.getTime() >= start.getTime()
-          && ent.getTime() <= end.getTime()
-        ) {
+        // Once we start getting entries higher than
+        // the end date we can stop recursively calling back to get the next period
+        if (ent.getTime() > end.getTime()) {
+
+      	  callback(null,matchedEntries);
+          return null
+
+        } else if (ent.getTime() >= start.getTime()) {
 
 	  // Skip if it doesn't meet the taskNameFilter match
           if (params.hasOwnProperty('taskNameFilter')
@@ -214,23 +214,16 @@ method.getTimesheetEntries = function (params,callback) {
         }
       }
 
-      // If the start date is now in the next month, stop here and return
-      // to the original callback
-      if (period.getTime() > end.getTime()) {
-      	callback(null,matchedEntries);
-      } else {
+      // Update the start date to be the next week and get the next timesheet
+      var nextPeriodDate = new Date(period.getFullYear(), period.getMonth(), (period.getDate()+7));
 
-        // Update the start date to be the next week and get the next timesheet
-        var nextPeriodDate = new Date(period.getFullYear(), period.getMonth(), (period.getDate()+7));
-
-        self.getTimesheetEntries({
-          startDate:  params.startDate,
-          endDate:    params.endDate,
-          taskNameFilter: params.taskNameFilter,
-          matchedEntries: matchedEntries,
-          periodDate: nextPeriodDate
-        }, callback)
-      }
+      self.getTimesheetEntries({
+        startDate:  params.startDate,
+        endDate:    params.endDate,
+        taskNameFilter: params.taskNameFilter,
+        matchedEntries: matchedEntries,
+        periodDate: nextPeriodDate
+      }, callback)
 
     })
   })
