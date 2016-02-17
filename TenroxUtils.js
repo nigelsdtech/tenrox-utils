@@ -17,8 +17,7 @@
 "use strict"
 
 var request    = require('request')
-   ,JSONprint  = require('json-print')
-   ,dateformat = require('dateformat')
+   ,dateformat = require('dateformat');
 
 var method = TenroxUtils.prototype;
 
