@@ -23,5 +23,8 @@
   "dependencies": {
     "dateformat": "^1.0.12",
     "request": "^2.65.0"
+  },
+  "devDependencies": {
+    "prompt": "1.0.0"
   }
 }
