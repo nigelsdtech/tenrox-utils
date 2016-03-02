@@ -90,19 +90,26 @@ method.doAuth = function (callback) {
   }
 
 
+  var username = this.org+':'+this.username
+
   // Fire off the request
   request({
     method: 'GET',
     baseUrl: this.mobiApiUrl,
     uri: 'Security',
     auth: {
-      user: this.org+':'+this.username,
+      user: username,
       pass: this.password
     }
   } , function (err,response,body) {
 
     if (err) {
       callback(new Error('tenroxUtils.doAuth error: ' + err));
+      return null;
+    }
+
+    if (response.statusCode != 200) {
+      callback(new Error('tenroxUtils.doAuth Unexpected response status code -\n' + body));
       return null;
     }
 
@@ -131,8 +138,6 @@ method.doAuth = function (callback) {
  * @param {date} params.startDate - Get entries from this day
  * @param {date} params.endDate - Get entries up to this day
  * @param {string} params.taskNameFilter - Regexp search to filter on the task name. Default null.
- * @param {date} params.periodDate - For internal use only when this proc calls itself recursively. Default null.
- * @param {object} params.matchedEntries - For internal use only when this proc calls itself recursively. Default null
  * @param {callback} callback - The callback that handles the response. It provides an array with a set of timesheet entries that matched the criteria.
  *
  */
