@@ -9,13 +9,10 @@ console.log('Begin example script')
 console.log('====================')
 
 
-
+/*
+ * Get a sample set of timesheet entries
+ */
 function getTimesheetEntries() {
-
-
-  /*
-   * Get timesheet entries
-   */
 
   var numEntriesToDisplay = 20
   var d = new Date()
@@ -57,6 +54,9 @@ function getTimesheetEntries() {
 }
 
 
+/*
+ * Get the user's Tenrox credentials and fire the example
+ */
 
 
 prompt.start();
