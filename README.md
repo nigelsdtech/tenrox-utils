@@ -1,6 +1,12 @@
 # tenrox-utils
 Interface with Tenrox timesheet system.
 
+
+### Version
+1.0.0
+
+
+
 ### Installation
 
 This isn't available on npm yet, so you'll just have to use github
@@ -19,7 +25,9 @@ See examples/usage.js to get started. You can run it with the following.
 $ node examples/usage.js
 ```
 
-At the moment there is only one function - getting your timesheet entries between any two dates. You can call this function using the following
+
+
+At the moment there is only one function - getting your timesheet entries between any two dates. You can call this function using the following:
 
 ```js
 var Tenrox = require('tenrox-utils')
@@ -42,7 +50,6 @@ tenrox.getTimesheetEntries({
 
   if (err) {
     console.error('Error getting tenrox shifts: ' + err)
-    callback(new Error(err))
     return null
   }
 
