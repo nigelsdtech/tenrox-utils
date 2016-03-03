@@ -49,7 +49,7 @@ tenrox.getTimesheetEntries({
 }, function (err,entries) {
 
   if (err) {
-    console.error('Error getting tenrox shifts: ' + err)
+    console.error('Error getting timesheet entries: ' + err)
     return null
   }
 
