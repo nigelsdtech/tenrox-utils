@@ -19,15 +19,7 @@ $ npm install "nigelsdtech/tenrox-utils#1.0.0"
 
 ### Usage
 
-See examples/usage.js to get started. You can run it with the following.
-
-```sh
-$ node examples/usage.js
-```
-
-
-
-At the moment there is only one function - getting your timesheet entries between any two dates. You can call this function using the following:
+Currently there is only one function - getting your timesheet entries between any two dates. You can call this function using the following:
 
 ```js
 var Tenrox = require('tenrox-utils')
@@ -71,3 +63,11 @@ tenrox.getTimesheetEntries({
 })
 ```
 
+
+### Examples
+
+See examples/usage.js to get started. You can run it with the following.
+
+```sh
+$ node examples/usage.js
+```
