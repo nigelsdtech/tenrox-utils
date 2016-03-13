@@ -223,6 +223,12 @@ method.getTimesheetEntries = function (params,callback) {
       // Update the start date to be the next week and get the next timesheet
       var nextPeriodDate = new Date(period.getFullYear(), period.getMonth(), (period.getDate()+7));
 
+      // Don't bother if the next period date is more than a week from the end date
+      if ((nextPeriodDate.getTime() - end.getTime()) > (1000*60*60*24*7)) {
+        callback(null,matchedEntries);
+        return null
+      }
+      
       self.getTimesheetEntries({
         startDate:  params.startDate,
         endDate:    params.endDate,
