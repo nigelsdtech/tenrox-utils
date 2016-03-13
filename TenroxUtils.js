@@ -63,7 +63,7 @@ function TenroxUtils(params) {
   baseRequest = request.defaults( {
     method: 'GET',
     baseUrl: 'https://2015r1mobile.tenrox.net/tenterprise/api',
-    timeout: (1000*2)
+    timeout: (1000*5)
   })
 
 
