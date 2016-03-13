@@ -28,9 +28,9 @@ var method = TenroxUtils.prototype;
  */
 
 var authCacheDuration
+   ,baseRequest
    ,cachedAuth
    ,cachedAuthAt
-   ,mobiApiUrl
    ,org
    ,password
    ,username
@@ -58,8 +58,14 @@ function TenroxUtils(params) {
   this.password  = params.password
 
 
-  this.mobiApiUrl        = 'https://2015r1mobile.tenrox.net/tenterprise/api'
-  this.authCacheDuration = (1000*60*2);
+  authCacheDuration = (1000*60*60);
+
+  baseRequest = request.defaults( {
+    method: 'GET',
+    baseUrl: 'https://2015r1mobile.tenrox.net/tenterprise/api',
+    timeout: (1000*2)
+  })
+
 
 }
 
@@ -93,9 +99,7 @@ method.doAuth = function (callback) {
   var username = this.org+':'+this.username
 
   // Fire off the request
-  request({
-    method: 'GET',
-    baseUrl: this.mobiApiUrl,
+  baseRequest({
     uri: 'Security',
     auth: {
       user: username,
@@ -104,7 +108,7 @@ method.doAuth = function (callback) {
   } , function (err,response,body) {
 
     if (err) {
-      callback(new Error('tenroxUtils.doAuth error: ' + err));
+      callback(err);
       return null;
     }
 
@@ -165,9 +169,7 @@ method.getTimesheetEntries = function (params,callback) {
     }
 
 
-    request({
-      method: 'GET',
-      baseUrl: self.mobiApiUrl,
+    baseRequest({
       uri: 'Timesheets',
       headers: {
         'API-Key' : token
@@ -179,7 +181,7 @@ method.getTimesheetEntries = function (params,callback) {
     }, function (err,response,body) {
 
       if (err) {
-        callback(new Error('tenroxUtils.getTimesheetEntries error while making request: ' + err));
+        callback(err);
         return null;
       }
 

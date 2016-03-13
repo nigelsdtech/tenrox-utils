@@ -27,7 +27,11 @@ function getTimesheetEntries() {
   }, function (err,entries) {
 
     if (err) {
-      console.error('Error while getting Timesheet Entries: ' + err)
+      console.error('Error while getting Timesheet Entries' + err)
+      console.error('Error Code: ' + err.code)
+      if (err.code == 'ETIMEDOUT') {
+        console.error('Is connect timeout? ' + err.connect)
+      }
       return null
     }
 
