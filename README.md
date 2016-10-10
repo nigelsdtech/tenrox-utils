@@ -3,7 +3,7 @@ Interface with Tenrox timesheet system.
 
 
 ### Version
-1.0.0
+1.0.1
 
 
 
@@ -12,7 +12,7 @@ Interface with Tenrox timesheet system.
 This isn't available on npm yet, so you'll just have to use github
 
 ```sh
-$ npm install "nigelsdtech/tenrox-utils#1.0.0"
+$ npm install tenrox-utils
 ```
 
 

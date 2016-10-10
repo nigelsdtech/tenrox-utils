@@ -1,6 +1,6 @@
 {
   "name": "tenrox-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Interface with Tenrox timesheet system's API.",
   "main": "TenroxUtils.js",
   "scripts": {
@@ -14,7 +14,8 @@
     "Tenrox",
     "API",
     "timesheet",
-    "timesheets"
+    "timesheets",
+    "tenrox-utils"
   ],
   "author": "Nigel Stephen D'Souza",
   "license": "ISC",
